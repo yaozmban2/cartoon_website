@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yu.cartoon.dao.UserMapper">
+  <resultMap id="BaseResultMap" type="cn.yu.cartoon.pojo.User">
+    <id column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="user_password" jdbcType="CHAR" property="userPassword" />
+    <result column="user_email" jdbcType="VARCHAR" property="userEmail" />
+    <result column="user_phone" jdbcType="CHAR" property="userPhone" />
+    <result column="user_gold" jdbcType="INTEGER" property="userGold" />
+    <result column="user_rmb" jdbcType="DECIMAL" property="userRmb" />
+    <result column="user_promotion" jdbcType="DECIMAL" property="userPromotion" />
+    <result column="user_popularize" jdbcType="CHAR" property="userPopularize" />
+    <result column="user_group" jdbcType="TINYINT" property="userGroup" />
+    <result column="previous_contact" jdbcType="INTEGER" property="previousContact" />
+    <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
+    <result column="vip_time" jdbcType="TIMESTAMP" property="vipTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    user_id, user_name, user_password, user_email, user_phone, user_gold, user_rmb, user_promotion, 
+    user_popularize, user_group, previous_contact, is_delete, vip_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  <select id="selectUserByUserName" parameterType="java.lang.String" resultType="User">
+    select * from user where user_name = #{userName}
+  </select>
+  <select id="selectUserByUserEmail" parameterType="String" resultType="User">
+    select * from user where user_email = #{userEmail}
+  </select>
+  <select id="selectUserByUserPhone" parameterType="String" resultType="User">
+    select * from user where user_phone = #{userPhone}
+  </select>
+  <select id="selectUserByUserPopularize" parameterType="String" resultType="User">
+    select user_id,previous_contact from user where user_popularize = #{userPopularize}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user
+    where user_id = #{userId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.yu.cartoon.pojo.User">
+    insert into user (user_id, user_name, user_password, 
+      user_email, user_phone, user_gold, 
+      user_rmb, user_promotion, user_popularize, 
+      user_group, previous_contact, is_delete, 
+      vip_time, create_time)
+    values (#{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{userPassword,jdbcType=CHAR}, 
+      #{userEmail,jdbcType=VARCHAR}, #{userPhone,jdbcType=CHAR}, #{userGold,jdbcType=INTEGER}, 
+      #{userRmb,jdbcType=DECIMAL}, #{userPromotion,jdbcType=DECIMAL}, #{userPopularize,jdbcType=CHAR}, 
+      #{userGroup,jdbcType=TINYINT}, #{previousContact,jdbcType=INTEGER}, #{isDelete,jdbcType=TINYINT}, 
+      #{vipTime,jdbcType=TIMESTAMP}, #{createTime, jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.yu.cartoon.pojo.User">
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="userPassword != null">
+        user_password,
+      </if>
+      <if test="userEmail != null">
+        user_email,
+      </if>
+      <if test="userPhone != null">
+        user_phone,
+      </if>
+      <if test="userGold != null">
+        user_gold,
+      </if>
+      <if test="userRmb != null">
+        user_rmb,
+      </if>
+      <if test="userPromotion != null">
+        user_promotion,
+      </if>
+      <if test="userPopularize != null">
+        user_popularize,
+      </if>
+      <if test="userGroup != null">
+        user_group,
+      </if>
+      <if test="previousContact != null">
+        previous_contact,
+      </if>
+      <if test="isDelete != null">
+        is_delete,
+      </if>
+      <if test="vipTime != null">
+        vip_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userPassword != null">
+        #{userPassword,jdbcType=CHAR},
+      </if>
+      <if test="userEmail != null">
+        #{userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhone != null">
+        #{userPhone,jdbcType=CHAR},
+      </if>
+      <if test="userGold != null">
+        #{userGold,jdbcType=INTEGER},
+      </if>
+      <if test="userRmb != null">
+        #{userRmb,jdbcType=DECIMAL},
+      </if>
+      <if test="userPromotion != null">
+        #{userPromotion,jdbcType=DECIMAL},
+      </if>
+      <if test="userPopularize != null">
+        #{userPopularize,jdbcType=CHAR},
+      </if>
+      <if test="userGroup != null">
+        #{userGroup,jdbcType=TINYINT},
+      </if>
+      <if test="previousContact != null">
+        #{previousContact,jdbcType=INTEGER},
+      </if>
+      <if test="isDelete != null">
+        #{isDelete,jdbcType=TINYINT},
+      </if>
+      <if test="vipTime != null">
+        #{vipTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.yu.cartoon.pojo.User">
+    update user
+    <set>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userPassword != null">
+        user_password = #{userPassword,jdbcType=CHAR},
+      </if>
+      <if test="userEmail != null">
+        user_email = #{userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhone != null">
+        user_phone = #{userPhone,jdbcType=CHAR},
+      </if>
+      <if test="userGold != null">
+        user_gold = #{userGold,jdbcType=INTEGER},
+      </if>
+      <if test="userRmb != null">
+        user_rmb = #{userRmb,jdbcType=DECIMAL},
+      </if>
+      <if test="userPromotion != null">
+        user_promotion = #{userPromotion,jdbcType=DECIMAL},
+      </if>
+      <if test="userPopularize != null">
+        user_popularize = #{userPopularize,jdbcType=CHAR},
+      </if>
+      <if test="userGroup != null">
+        user_group = #{userGroup,jdbcType=TINYINT},
+      </if>
+      <if test="previousContact != null">
+        previous_contact = #{previousContact,jdbcType=INTEGER},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=TINYINT},
+      </if>
+      <if test="vipTime != null">
+        vip_time = #{vipTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.yu.cartoon.pojo.User">
+    update user
+    set user_name = #{userName,jdbcType=VARCHAR},
+      user_password = #{userPassword,jdbcType=CHAR},
+      user_email = #{userEmail,jdbcType=VARCHAR},
+      user_phone = #{userPhone,jdbcType=CHAR},
+      user_gold = #{userGold,jdbcType=INTEGER},
+      user_rmb = #{userRmb,jdbcType=DECIMAL},
+      user_promotion = #{userPromotion,jdbcType=DECIMAL},
+      user_popularize = #{userPopularize,jdbcType=CHAR},
+      user_group = #{userGroup,jdbcType=TINYINT},
+      previous_contact = #{previousContact,jdbcType=INTEGER},
+      is_delete = #{isDelete,jdbcType=TINYINT},
+      vip_time = #{vipTime,jdbcType=TIMESTAMP}
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+</mapper>
