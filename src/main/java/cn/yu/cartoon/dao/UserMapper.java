@@ -1,8 +1,6 @@
 package cn.yu.cartoon.dao;
 
-import cn.yu.cartoon.pojo.User;
-
-import java.util.List;
+import cn.yu.cartoon.pojo.dto.User;
 
 public interface UserMapper {
     int deleteByPrimaryKey(Integer userId);

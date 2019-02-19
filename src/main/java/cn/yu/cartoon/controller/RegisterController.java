@@ -1,6 +1,6 @@
 package cn.yu.cartoon.controller;
 
-import cn.yu.cartoon.pojo.User;
+import cn.yu.cartoon.pojo.dto.User;
 import cn.yu.cartoon.service.RegisterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yu.cartoon.dao.ChapterMapper">
+    <resultMap id="BaseResultMap" type="cn.yu.cartoon.pojo.dto.Chapter" >
+        <id column="chapter_id" jdbcType="INTEGER" property="chapterId" />
+        <result column="chapter_name" jdbcType="VARCHAR" property="chapterName" />
+        <result column="chapter_upload_time" jdbcType="TIMESTAMP" property="chapterUploadTime" />
+        <result column="cartoon_id" jdbcType="INTEGER" property="cartoonId" />
+        <result column="chapter_price" jdbcType="INTEGER" property="chapterPrice" />
+        <result column="chapter_uri" jdbcType="VARCHAR" property="chapterUri" />
+        <result column="chapter_num" jdbcType="INTEGER" property="chapterNum" />
+    </resultMap>
+
+    <select id="selectCountByUri" parameterType="String" resultType="Integer" >
+        SELECT count(*) FROM chapter WHERE chapter_uri = #{chapterUri}
+    </select>
+    <select id="selectChapterById" parameterType="Integer" resultMap="BaseResultMap" >
+        SELECT * FROM chapter WHERE chapter_id = #{chapterId}
+    </select>
+
+    <insert id="insert" parameterType="Chapter" >
+        INSERT INTO chapter
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="chapterId != null">
+                chapter_id,
+            </if>
+            <if test="chapterName != null" >
+                chapter_name,
+            </if>
+            <if test="chapterUploadTime != null" >
+                chapter_upload_time,
+            </if>
+            <if test="cartoonId != null" >
+                cartoon_id,
+            </if>
+            <if test="chapterPrice != null" >
+                cartoon_price,
+            </if>
+            <if test="chapterUri != null" >
+                chapter_uri,
+            </if>
+            <if test="chapterNum != null">
+                chapter_num,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="chapterId != null">
+                #{chapterId},
+            </if>
+            <if test="chapterName != null" >
+                #{chapterName},
+            </if>
+            <if test="chapterUploadTime != null" >
+                #{chapterUploadTime},
+            </if>
+            <if test="cartoonId != null" >
+                #{cartoonId},
+            </if>
+            <if test="chapterPrice != null" >
+                #{chapterPrice},
+            </if>
+            <if test="chapterUri != null" >
+                #{chapterUri},
+            </if>
+            <if test="chapterNum != null">
+                #{chapterNum},
+            </if>
+        </trim>
+    </insert>
+
+</mapper>

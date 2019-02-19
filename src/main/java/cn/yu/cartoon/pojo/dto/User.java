@@ -1,4 +1,4 @@
-package cn.yu.cartoon.pojo;
+package cn.yu.cartoon.pojo.dto;
 
 import java.math.BigDecimal;
 import java.util.Date;

@@ -31,16 +31,16 @@ public class SwaggerConfig {
 
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(buildApiInf())
-                .select().apis(RequestHandlerSelectors.basePackage("cn.yu.shop.controller"))
+                .select().apis(RequestHandlerSelectors.basePackage("cn.yu.cartoon.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }
 
     private ApiInfo buildApiInf() {
         return new ApiInfoBuilder()
-                .title("商城项目的api接口")
+                .title("漫画网站接口")
                 .termsOfServiceUrl("http://blog.csdn.net/u014231523网址链接")
-                .description("商城的所有controller接口")
+                .description("漫画网站的所有controller接口")
                 .contact(new Contact("yu", "http://blog.csdn.net/u014231523", "455766338@qq.com"))
                 .build();
 

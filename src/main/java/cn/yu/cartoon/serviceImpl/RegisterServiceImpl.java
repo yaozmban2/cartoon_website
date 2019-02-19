@@ -1,7 +1,7 @@
 package cn.yu.cartoon.serviceImpl;
 
 import cn.yu.cartoon.dao.UserMapper;
-import cn.yu.cartoon.pojo.User;
+import cn.yu.cartoon.pojo.dto.User;
 import cn.yu.cartoon.service.RegisterService;
 import cn.yu.cartoon.utils.Encryption;
 import cn.yu.cartoon.utils.RandomUtils;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

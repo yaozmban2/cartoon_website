@@ -1,7 +1,5 @@
 package cn.yu.cartoon.service;
 
-import cn.yu.cartoon.pojo.User;
-
 import java.security.NoSuchAlgorithmException;
 
 /**

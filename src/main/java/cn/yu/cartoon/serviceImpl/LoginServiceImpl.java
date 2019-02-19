@@ -1,13 +1,12 @@
 package cn.yu.cartoon.serviceImpl;
 
 import cn.yu.cartoon.dao.UserMapper;
-import cn.yu.cartoon.pojo.User;
+import cn.yu.cartoon.pojo.dto.User;
 import cn.yu.cartoon.service.LoginService;
 import cn.yu.cartoon.utils.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 /**
  * @author Yu

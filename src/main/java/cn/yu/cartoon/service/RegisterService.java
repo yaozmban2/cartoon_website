@@ -1,6 +1,6 @@
 package cn.yu.cartoon.service;
 
-import cn.yu.cartoon.pojo.User;
+import cn.yu.cartoon.pojo.dto.User;
 
 import java.security.NoSuchAlgorithmException;
 
