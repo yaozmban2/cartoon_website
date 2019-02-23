@@ -3,6 +3,7 @@ package cn.yu.cartoon.service;
 import cn.yu.cartoon.pojo.dto.Chapter;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 /**
  * @author Yu
@@ -44,6 +45,24 @@ public interface ChapterService {
      **/
     void uploadChapterByZip(Chapter chapter, String zipFilePath, String decompressDirPath) throws IOException;
 
+    /**
+     *  将漫画章节数据存入redis中
+     *
+     * @author Yu
+     * @date 15:22 2019/2/19
+     * @param chapter 章节数据对象
+     **/
     void insertChapterIntoRdis(Chapter chapter);
+
+    /**
+     * 根据章节id获得章节数据
+     *
+     * @author Yu
+     * @date 16:48 2019/2/19
+     * @param id 章节id
+     * @return Chapter 返回的章节数据，如果数据库中不存在则返回null
+     * @throws ParseException 时间字符串转换为date时出错
+     **/
+    Chapter getChapterById(int id) throws ParseException;
 
 }

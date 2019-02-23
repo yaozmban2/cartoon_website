@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
@@ -58,9 +59,12 @@ public class ChapterServiceImpl implements ChapterService {
 
         //如果上传成功，则将相关的信息存入数据库
         if (FtpUtil.upload(CartoonFtpConfig.host, CartoonFtpConfig.port, CartoonFtpConfig.userName, CartoonFtpConfig.password, chapterFilePath, CartoonFtpConfig.basePath, dirUri, true)) {
-            //插入数据库
+            //插入mysql数据库
             chapterMapper.insert(chapter);
-            //删除临时文件
+            //插入到redis数据库中
+            chapter = chapterMapper.selectChapterByUri(chapter.getChapterUri());
+            insertChapterIntoRdis(chapter);
+            //删除临时文件夹
             if(sourceFile.delete()) {
                 logger.debug(sourceFile.getName() + " is deleted!");
             }else {
@@ -73,10 +77,11 @@ public class ChapterServiceImpl implements ChapterService {
     public void uploadChapterByZip(Chapter chapter, String zipFilePath, String decompressDirPath) throws IOException {
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-ddHHmmss HH MM SS");
         String tempDirName = sf.format(new Date());
+        //解压zip文件
         if (ZipUtils.decompress(zipFilePath, decompressDirPath + File.separator + tempDirName)) {
             //删除临时的zip文件
             File zipFile = new File(zipFilePath);
-            zipFile.delete();
+            boolean isdelete = zipFile.delete();
             //存储到图片服务器
             storageChapter(chapter, decompressDirPath + File.separator + tempDirName);
         }
@@ -85,6 +90,28 @@ public class ChapterServiceImpl implements ChapterService {
     @Override
     public void insertChapterIntoRdis(Chapter chapter) {
         chapterRedisDao.setChapterRecord(chapter);
+    }
+
+    @Override
+    public Chapter getChapterById(int id) throws ParseException {
+        Chapter chapter = null;
+        //先从redis中取数据
+        chapter = chapterRedisDao.getChapterRecordById(id);
+        //如果redis中没有数据 则从mysql数据库中去取
+        if (null == chapter) {
+            chapter = chapterMapper.selectChapterById(id);
+            //如果数据库中也没有该数据则往redis中存入值免得缓存穿透
+            if (null == chapter) {
+                chapter = new Chapter();
+                chapter.setChapterId(id);
+                chapterRedisDao.setChapterRecord(chapter);
+                return null;
+            } else {
+                //如果数据库中有则将该数据存入redis中免得下次查询还要去数据库
+                chapterRedisDao.setChapterRecord(chapter);
+            }
+        }
+        return chapter;
     }
 
 }

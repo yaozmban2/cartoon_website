@@ -35,7 +35,7 @@ public class FilesUtils {
                 path.mkdirs();
             }
             //存放的文件地址
-            returnFileName = tempZipPath + "\\" + saveFileName;
+            returnFileName = tempZipPath + File.separator + saveFileName;
             File savedFile = new File(returnFileName);
             multipartFile.transferTo(savedFile);
         }else {

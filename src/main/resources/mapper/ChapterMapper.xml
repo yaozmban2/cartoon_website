@@ -17,6 +17,9 @@
     <select id="selectChapterById" parameterType="Integer" resultMap="BaseResultMap" >
         SELECT * FROM chapter WHERE chapter_id = #{chapterId}
     </select>
+    <select id="selectChapterByUri" parameterType="String" resultMap="BaseResultMap" >
+        SELECT * FROM chapter WHERE chapter_uri = #{chapterUri}
+    </select>
 
     <insert id="insert" parameterType="Chapter" >
         INSERT INTO chapter
@@ -34,7 +37,7 @@
                 cartoon_id,
             </if>
             <if test="chapterPrice != null" >
-                cartoon_price,
+                chapter_price,
             </if>
             <if test="chapterUri != null" >
                 chapter_uri,

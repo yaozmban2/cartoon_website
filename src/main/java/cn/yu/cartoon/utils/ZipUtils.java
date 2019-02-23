@@ -67,7 +67,7 @@ public class ZipUtils {
      * @return boolean 解压成功返回true 解压失败返回false
      * @throws IOException IO异常
      **/
-    public static boolean decompress(String zipPath, String descDir)throws IOException{
+    public static boolean decompress(String zipPath, String descDir) throws IOException {
 
         File zipFile = new File(zipPath);
         File pathFile = new File(descDir);
@@ -102,6 +102,7 @@ public class ZipUtils {
             in.close();
             out.close();
         }
+        zip.close();
         return true;
     }
 }

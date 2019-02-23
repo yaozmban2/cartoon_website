@@ -2,24 +2,24 @@ package cn.yu.cartoon.controller;
 
 import cn.yu.cartoon.config.TempDirConfig;
 import cn.yu.cartoon.pojo.dto.Chapter;
+import cn.yu.cartoon.pojo.vo.BaseResultHelper;
 import cn.yu.cartoon.service.ChapterService;
 import cn.yu.cartoon.utils.FilesUtils;
 import cn.yu.cartoon.utils.ZipUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 
 /**
@@ -47,16 +47,33 @@ public class ChapterController {
      **/
     @ApiOperation("漫画章节上传")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "chapterName", value = "章节名字(必须)"),
-            @ApiImplicitParam(paramType = "query", name = "chapterPrice", value = "章节金币价格"),
-            @ApiImplicitParam(paramType = "query", name = "zipFile", value = "一章漫画的zip压缩文件"),
+            @ApiImplicitParam(paramType = "query", name = "chapterName", value = "章节名字(必须)", required = true),
+            @ApiImplicitParam(paramType = "query", name = "chapterPrice", value = "章节金币价格", required = true),
     })
-    @PostMapping("/uploadChapter/{cartoonId}")
+    @PostMapping("/chapter/{cartoonId}")
     @ResponseBody
-    public String uploadChapter(@PathVariable Integer cartoonId, @RequestParam(value = "chapterName") String chapterName, @RequestParam(value = "chapterPrice") Integer chapterPrice,
-                                 @RequestParam(value = "zipFile") MultipartFile zipFile) {
+    public BaseResultHelper uploadChapter(@PathVariable Integer cartoonId,
+                                          @RequestParam(value = "chapterName") String chapterName,
+                                          @RequestParam(value = "chapterPrice") Integer chapterPrice,
+                                          @ApiParam(value = "上传的文件", required = true) MultipartFile zipFile) {
+        BaseResultHelper resultHelper = new BaseResultHelper();
+
         if (null == zipFile) {
-            return "请上传zip文件";
+            resultHelper.setCode("FAIL");
+            resultHelper.setMsg("zip文件为空");
+            return resultHelper;
+        }
+
+        if (null == chapterName || "".equals(chapterName)) {
+            resultHelper.setCode("FAIL");
+            resultHelper.setMsg("没有输入章节名称");
+            return resultHelper;
+        }
+
+        if (null == chapterPrice) {
+            resultHelper.setCode("FAIL");
+            resultHelper.setMsg("输入价格错误");
+            return resultHelper;
         }
 
         //将MultipartFile类型文件转换为File文件
@@ -65,17 +82,23 @@ public class ChapterController {
             filePath = FilesUtils.multifile2file(zipFile, TempDirConfig.getTempZipDirPath());
         } catch (IOException e) {
             logger.warn("method:uploadChapter，line:45 转为file文件错误！", e);
-            return "请重新上传";
+            resultHelper.setCode("FAIL");
+            resultHelper.setMsg("服务器出错，请重新上传");
+            return resultHelper;
         }
 
         //判断是不是zip文件
         try {
             if (!ZipUtils.isArchiveFile(new File(filePath))) {
-                return "请上传zip文件";
+                resultHelper.setCode("FAIL");
+                resultHelper.setMsg("上传的不是zip文件");
+                return resultHelper;
             }
         } catch (IOException e) {
             logger.warn("method:uploadChapter，line:53", e);
-            return "请重新上传";
+            resultHelper.setCode("FAIL");
+            resultHelper.setMsg("服务器出错，请重新上传");
+            return resultHelper;
         }
 
         Chapter chapter = new Chapter();
@@ -89,9 +112,40 @@ public class ChapterController {
             chapterService.uploadChapterByZip(chapter, filePath, TempDirConfig.getTempDecompressDirPath());
         } catch (IOException e) {
             logger.warn("method:uploadChapter，line:59 上传章节失败！", e);
-            return "请重新上传一次";
+            resultHelper.setCode("FAIL");
+            resultHelper.setMsg("服务器出错，请重新上传");
+            return resultHelper;
         }
 
-        return "上传成功";
+        resultHelper.setCode("SUCCESS");
+        resultHelper.setMsg("上传成功");
+        return resultHelper;
+    }
+
+    /**
+     *  获得漫画章节的信息
+     *
+     * @author Yu
+     * @date 21:36 2019/2/19
+     **/
+    @ApiOperation("获得漫画章节的基本信息")
+    @GetMapping("/chapter/chapterInfo/{chapterId}")
+    @ResponseBody
+    public BaseResultHelper<Chapter> getChapterInfo(@PathVariable Integer chapterId) {
+
+        BaseResultHelper<Chapter> result =  new BaseResultHelper<>();
+        Chapter chapter;
+        try {
+            chapter = chapterService.getChapterById(chapterId);
+        } catch (ParseException e) {
+            logger.warn("从redis中读取的时间字符串转换为Date数据时出错", e);
+            result.setCode("FAIL");
+            result.setMsg("服务器出错，请刷新重试");
+            return result;
+        }
+        result.setCode("SUCCESS");
+        result.setMsg("漫画章节信息获取成功");
+        result.setData(chapter);
+        return result;
     }
 }

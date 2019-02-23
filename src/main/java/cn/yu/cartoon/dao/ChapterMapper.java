@@ -37,4 +37,14 @@ public interface ChapterMapper {
      * @return Chapter 章节数据
      **/
     Chapter selectChapterById(Integer chapterId);
+
+    /**
+     *  根据uri的值查找到章节数据
+     *
+     * @author Yu
+     * @date 17:02 2019/2/19
+     * @param chapterUri 章节地址的文件夹名称
+     * @return Chapter
+     **/
+    Chapter selectChapterByUri(String chapterUri);
 }

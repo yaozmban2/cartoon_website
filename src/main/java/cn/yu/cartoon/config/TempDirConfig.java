@@ -1,5 +1,8 @@
 package cn.yu.cartoon.config;
 
+import javax.servlet.ServletContext;
+import java.io.File;
+
 /**
  * 存放一些临时文件路径的类
  *
@@ -14,8 +17,8 @@ public class TempDirConfig {
     private static String tempDecompressDirPath;
 
     static {
-        String relativelyPath = System.getProperty("user.dir");
-        tempZipDirPath  = relativelyPath + "\\temZipDir";
+        String relativelyPath = System.getProperty("rootPath") ;
+        tempZipDirPath = relativelyPath + "temZipDir";
         tempDecompressDirPath = relativelyPath + "temDepressDir";
     }
 
