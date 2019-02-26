@@ -1,8 +1,5 @@
 package cn.yu.cartoon.config;
 
-import javax.servlet.ServletContext;
-import java.io.File;
-
 /**
  * 存放一些临时文件路径的类
  *

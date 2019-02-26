@@ -45,12 +45,12 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
-    public void storageChapter(Chapter chapter, String chapterFilePath) throws IOException {
+    public Chapter storageChapter(Chapter chapter, String chapterFilePath) throws IOException {
 
         //计算章节页数
         File sourceFile = new File(chapterFilePath);
         chapter.setChapterNum(Objects.requireNonNull(sourceFile.listFiles()).length);
-        //生成章节图片目录名
+        //生成章节目录名
         String dirUri = RandomUtils.randomString(8);
         while (uriIsExit(dirUri)) {
             dirUri = RandomUtils.randomString(8);
@@ -63,18 +63,21 @@ public class ChapterServiceImpl implements ChapterService {
             chapterMapper.insert(chapter);
             //插入到redis数据库中
             chapter = chapterMapper.selectChapterByUri(chapter.getChapterUri());
-            insertChapterIntoRdis(chapter);
+            insertChapterIntoRedis(chapter);
             //删除临时文件夹
             if(sourceFile.delete()) {
                 logger.debug(sourceFile.getName() + " is deleted!");
             }else {
                 logger.debug("Delete operation is failed.");
             }
+            return chapter;
+        } else {
+            return null;
         }
     }
 
     @Override
-    public void uploadChapterByZip(Chapter chapter, String zipFilePath, String decompressDirPath) throws IOException {
+    public Chapter uploadChapterByZip(Chapter chapter, String zipFilePath, String decompressDirPath) throws IOException {
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-ddHHmmss HH MM SS");
         String tempDirName = sf.format(new Date());
         //解压zip文件
@@ -83,12 +86,14 @@ public class ChapterServiceImpl implements ChapterService {
             File zipFile = new File(zipFilePath);
             boolean isdelete = zipFile.delete();
             //存储到图片服务器
-            storageChapter(chapter, decompressDirPath + File.separator + tempDirName);
+            return storageChapter(chapter, decompressDirPath + File.separator + tempDirName);
+        } else {
+            return null;
         }
     }
 
     @Override
-    public void insertChapterIntoRdis(Chapter chapter) {
+    public void insertChapterIntoRedis(Chapter chapter) {
         chapterRedisDao.setChapterRecord(chapter);
     }
 

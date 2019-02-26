@@ -24,8 +24,6 @@ public class User {
 
     private Byte userGroup;
 
-    private Integer previousContact;
-
     private Byte isDelete;
 
     private Date vipTime;
@@ -112,14 +110,6 @@ public class User {
         this.userGroup = userGroup;
     }
 
-    public Integer getPreviousContact() {
-        return previousContact;
-    }
-
-    public void setPreviousContact(Integer previousContact) {
-        this.previousContact = previousContact;
-    }
-
     public Byte getIsDelete() {
         return isDelete;
     }
@@ -157,7 +147,6 @@ public class User {
                 ", userPromotion=" + userPromotion +
                 ", userPopularize='" + userPopularize + '\'' +
                 ", userGroup=" + userGroup +
-                ", previousContact=" + previousContact +
                 ", isDelete=" + isDelete +
                 ", vipTime=" + vipTime +
                 '}';

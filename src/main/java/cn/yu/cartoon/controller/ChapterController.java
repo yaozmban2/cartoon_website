@@ -3,6 +3,7 @@ package cn.yu.cartoon.controller;
 import cn.yu.cartoon.config.TempDirConfig;
 import cn.yu.cartoon.pojo.dto.Chapter;
 import cn.yu.cartoon.pojo.vo.BaseResultHelper;
+import cn.yu.cartoon.pojo.vo.chaptervo.ChapterInfoVo;
 import cn.yu.cartoon.service.ChapterService;
 import cn.yu.cartoon.utils.FilesUtils;
 import cn.yu.cartoon.utils.ZipUtils;
@@ -52,11 +53,11 @@ public class ChapterController {
     })
     @PostMapping("/chapter/{cartoonId}")
     @ResponseBody
-    public BaseResultHelper uploadChapter(@PathVariable Integer cartoonId,
-                                          @RequestParam(value = "chapterName") String chapterName,
-                                          @RequestParam(value = "chapterPrice") Integer chapterPrice,
-                                          @ApiParam(value = "上传的文件", required = true) MultipartFile zipFile) {
-        BaseResultHelper resultHelper = new BaseResultHelper();
+    public BaseResultHelper<ChapterInfoVo> uploadChapter(@PathVariable Integer cartoonId,
+                                                         @RequestParam(value = "chapterName") String chapterName,
+                                                         @RequestParam(value = "chapterPrice") Integer chapterPrice,
+                                                         @ApiParam(value = "上传的文件", required = true) MultipartFile zipFile) {
+        BaseResultHelper<ChapterInfoVo> resultHelper = new BaseResultHelper<>();
 
         if (null == zipFile) {
             resultHelper.setCode("FAIL");
@@ -107,19 +108,29 @@ public class ChapterController {
         chapter.setChapterPrice(chapterPrice);
         chapter.setChapterUploadTime(new Date());
 
+        Chapter returnChapter = null;
         //将zip章节数据存入数据库，章节漫画存入图片服务器
         try {
-            chapterService.uploadChapterByZip(chapter, filePath, TempDirConfig.getTempDecompressDirPath());
+            returnChapter = chapterService.uploadChapterByZip(chapter, filePath, TempDirConfig.getTempDecompressDirPath());
         } catch (IOException e) {
             logger.warn("method:uploadChapter，line:59 上传章节失败！", e);
             resultHelper.setCode("FAIL");
             resultHelper.setMsg("服务器出错，请重新上传");
             return resultHelper;
         }
-
-        resultHelper.setCode("SUCCESS");
-        resultHelper.setMsg("上传成功");
+        if (null != returnChapter) {
+            ChapterInfoVo chapterInfoVo = new ChapterInfoVo();
+            chapterInfoVo.setChapterId(returnChapter.getChapterId());
+            chapterInfoVo.setChapterUri(returnChapter.getChapterUri());
+            resultHelper.setCode("SUCCESS");
+            resultHelper.setMsg("上传成功");
+            resultHelper.setData(chapterInfoVo);
+            return resultHelper;
+        }
+        resultHelper.setCode("FAIL");
+        resultHelper.setMsg("上传失败，请重新上传");
         return resultHelper;
+
     }
 
     /**

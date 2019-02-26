@@ -2,6 +2,7 @@ package cn.yu.cartoon.service;
 
 import cn.yu.cartoon.pojo.dto.User;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.NoSuchAlgorithmException;
 
 /**
@@ -65,14 +66,47 @@ public interface RegisterService {
     boolean validateUserEmail(String userEmail);
 
     /**
+     *  检查用户输入的注册信息是否有效
+     *
+     * @author Yu
+     * @date 16:28 2019/2/25
+     * @param user 用户输入的注册信息
+     * @param validatePassword 二次输入的验证密码
+     * @return int 用户注册信息没问题  返回0， 用户名不合法 返回1， 用户名已存在 返回2， 密码太简单 返回3， 两次输入的密码不一致 返回4， 用户邮箱不合法 返回5， 用户邮箱已存在 返回6
+     **/
+    int checkRegisterInfo(User user, String validatePassword);
+
+    /**
      *  将用户信息存入数据库中
      *
      * @author Yu
      * @date 19:07 2019/1/27
      * @param user 用户表单信息
-     * @param popularize String 推广标识
-     * @throws NoSuchAlgorithmException 没有md5算法的错误
+     * @param validatePassword 二次验证密码
+     * @param request HTTP的请求对象
+     * @return int 用户注册成功  返回0， 用户名不合法 返回1， 用户名已存在 返回2， 密码太简单 返回3， 两次输入的密码不一致 返回4， 用户邮箱不合法 返回5， 用户邮箱已存在 返回6，没有Md5算法出现异常 返回7
      **/
-    void registerUser(User user, String popularize) throws NoSuchAlgorithmException;
+    int registerUser(User user, String validatePassword, HttpServletRequest request);
+
+    /**
+     *  根据推广代码获得用户的信息
+     *
+     * @author Yu
+     * @date 13:59 2019/2/23
+     * @param popularizedCode 推广者的推广代码
+     * @return User 用户信息
+     **/
+    User getUserByPopularizedCode(String popularizedCode);
+
+    /**
+     * 根据分销级别 将邀请者和受邀者还有分成级别存入数据库
+     *
+     * @author Yu
+     * @date 15:56 2019/2/23
+     * @param previousId 邀请者id
+     * @param inviteeId 受邀者id
+     * @param level 分成级别
+     **/
+    void setPopularize(int previousId, int inviteeId, Byte level);
 
 }

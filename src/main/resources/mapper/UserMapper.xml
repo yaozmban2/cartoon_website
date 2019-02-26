@@ -12,14 +12,13 @@
     <result column="user_promotion" jdbcType="DECIMAL" property="userPromotion" />
     <result column="user_popularize" jdbcType="CHAR" property="userPopularize" />
     <result column="user_group" jdbcType="TINYINT" property="userGroup" />
-    <result column="previous_contact" jdbcType="INTEGER" property="previousContact" />
     <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
     <result column="vip_time" jdbcType="TIMESTAMP" property="vipTime" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
     user_id, user_name, user_password, user_email, user_phone, user_gold, user_rmb, user_promotion, 
-    user_popularize, user_group, previous_contact, is_delete, vip_time
+    user_popularize, user_group, is_delete, vip_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -37,8 +36,9 @@
     select * from user where user_phone = #{userPhone}
   </select>
   <select id="selectUserByUserPopularize" parameterType="String" resultType="User">
-    select user_id,previous_contact from user where user_popularize = #{userPopularize}
+    select user_id from user where user_popularize = #{userPopularize}
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from user
     where user_id = #{userId,jdbcType=INTEGER}
@@ -47,12 +47,12 @@
     insert into user (user_id, user_name, user_password, 
       user_email, user_phone, user_gold, 
       user_rmb, user_promotion, user_popularize, 
-      user_group, previous_contact, is_delete, 
+      user_group, is_delete,
       vip_time, create_time)
     values (#{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{userPassword,jdbcType=CHAR}, 
       #{userEmail,jdbcType=VARCHAR}, #{userPhone,jdbcType=CHAR}, #{userGold,jdbcType=INTEGER}, 
       #{userRmb,jdbcType=DECIMAL}, #{userPromotion,jdbcType=DECIMAL}, #{userPopularize,jdbcType=CHAR}, 
-      #{userGroup,jdbcType=TINYINT}, #{previousContact,jdbcType=INTEGER}, #{isDelete,jdbcType=TINYINT}, 
+      #{userGroup,jdbcType=TINYINT}, #{isDelete,jdbcType=TINYINT},
       #{vipTime,jdbcType=TIMESTAMP}, #{createTime, jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="cn.yu.cartoon.pojo.dto.User">
@@ -87,9 +87,6 @@
       </if>
       <if test="userGroup != null">
         user_group,
-      </if>
-      <if test="previousContact != null">
-        previous_contact,
       </if>
       <if test="isDelete != null">
         is_delete,
@@ -129,9 +126,6 @@
       <if test="userGroup != null">
         #{userGroup,jdbcType=TINYINT},
       </if>
-      <if test="previousContact != null">
-        #{previousContact,jdbcType=INTEGER},
-      </if>
       <if test="isDelete != null">
         #{isDelete,jdbcType=TINYINT},
       </if>
@@ -170,9 +164,6 @@
       <if test="userGroup != null">
         user_group = #{userGroup,jdbcType=TINYINT},
       </if>
-      <if test="previousContact != null">
-        previous_contact = #{previousContact,jdbcType=INTEGER},
-      </if>
       <if test="isDelete != null">
         is_delete = #{isDelete,jdbcType=TINYINT},
       </if>
@@ -193,7 +184,6 @@
       user_promotion = #{userPromotion,jdbcType=DECIMAL},
       user_popularize = #{userPopularize,jdbcType=CHAR},
       user_group = #{userGroup,jdbcType=TINYINT},
-      previous_contact = #{previousContact,jdbcType=INTEGER},
       is_delete = #{isDelete,jdbcType=TINYINT},
       vip_time = #{vipTime,jdbcType=TIMESTAMP}
     where user_id = #{userId,jdbcType=INTEGER}

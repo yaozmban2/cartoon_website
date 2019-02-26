@@ -29,9 +29,10 @@ public interface ChapterService {
      * @date 17:28 2019/2/17
      * @param chapter 章节数据信息 除了chapterUri属性都要填入
      * @param chapterFilePath 漫画章节文件夹地址
+     * @return Chapter 存入服务器的章节信息
      * @throws IOException 输入输出错误
      **/
-    void storageChapter(Chapter chapter, String chapterFilePath) throws IOException;
+    Chapter storageChapter(Chapter chapter, String chapterFilePath) throws IOException;
 
     /**
      * 将zip压缩的漫画章节解压并上传到ftp图片服务器中
@@ -41,9 +42,10 @@ public interface ChapterService {
      * @param chapter 章节信息
      * @param zipFilePath 漫画章节的zip文件地址
      * @param decompressDirPath 存放解压文件的临时地址
+     * @return Chapter 存入服务器的章节信息
      * @throws IOException IO异常
      **/
-    void uploadChapterByZip(Chapter chapter, String zipFilePath, String decompressDirPath) throws IOException;
+    Chapter uploadChapterByZip(Chapter chapter, String zipFilePath, String decompressDirPath) throws IOException;
 
     /**
      *  将漫画章节数据存入redis中
@@ -52,7 +54,7 @@ public interface ChapterService {
      * @date 15:22 2019/2/19
      * @param chapter 章节数据对象
      **/
-    void insertChapterIntoRdis(Chapter chapter);
+    void insertChapterIntoRedis(Chapter chapter);
 
     /**
      * 根据章节id获得章节数据

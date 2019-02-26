@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yu.cartoon.dao.PopularizeMapper">
+    <resultMap id="BaseResultMap" type="cn.yu.cartoon.pojo.dto.Popularize">
+        <id column="popularize_id" jdbcType="INTEGER" property="popularizeId" />
+        <result column="invitees_id" jdbcType="INTEGER" property="inviteesId" />
+        <result column="invite_level" jdbcType="TINYINT" property="inviteLevel" />
+        <result column="previous_id" jdbcType="INTEGER" property="previousId" />
+    </resultMap>
+
+    <insert id="insert" parameterType="Popularize">
+        INSERT INTO popularize
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="popularizeId != null">
+                popularize_id,
+            </if>
+            <if test="inviteesId != null">
+                invitees_id,
+            </if>
+            <if test="inviteLevel != null">
+                invite_level,
+            </if>
+            <if test="previousId != null">
+                previous_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="popularizeId != null">
+                #{popularizeId, jdbcType=INTEGER},
+            </if>
+            <if test="inviteesId != null">
+                #{inviteesId, jdbcType=INTEGER},
+            </if>
+            <if test="inviteLevel != null">
+                #{inviteLevel, jdbcType=TINYINT},
+            </if>
+            <if test="previousId != null">
+                #{previousId, jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+</mapper>
