@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yu.cartoon.dao.ComboMapper">
+    <resultMap id="BaseResultMap" type="cn.yu.cartoon.pojo.dto.Combo" >
+        <id column="combo_id" jdbcType="INTEGER" property="comboId" />
+        <result column="combo_price" jdbcType="INTEGER" property="comboPrice" />
+        <result column="combo_currency" jdbcType="INTEGER" property="comboCurrency" />
+        <result column="vip_day" jdbcType="INTEGER" property="vipDay" />
+        <result column="combo_type" jdbcType="TINYINT" property="comboType" />
+        <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
+    </resultMap>
+
+    <select id="selectById" parameterType="Integer" resultMap="BaseResultMap">
+        select * from combo where combo_id = #{combId};
+    </select>
+
+    <insert id="insertAndGetId" useGeneratedKeys="true" keyProperty="comboId" parameterType="Combo">
+        insert into combo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="comboId != null" >
+                combo_id,
+            </if>
+             <if test="comboPrice != null" >
+                combo_price,
+            </if>
+             <if test="comboCurrency != null" >
+                combo_currency,
+            </if>
+             <if test="vipDay != null" >
+                vip_day,
+            </if>
+             <if test="comboType != null" >
+                combo_type,
+            </if>
+             <if test="isDelete != null" >
+                is_delete,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="comboId != null" >
+                #{comboId, jdbcType=INTEGER},
+            </if>
+            <if test="comboPrice != null" >
+                #{comboPrice, jdbcType=INTEGER},
+            </if>
+            <if test="comboCurrency != null" >
+                #{comboCurrency, jdbcType=INTEGER},
+            </if>
+            <if test="vipDay != null" >
+                #{vipDay, jdbcType=INTEGER},
+            </if>
+            <if test="comboType != null" >
+                #{comboType, jdbcType=TINYINT},
+            </if>
+            <if test="isDelete != null" >
+                #{isDelete, jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+</mapper>

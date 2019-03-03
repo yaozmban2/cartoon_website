@@ -1,6 +1,5 @@
 package cn.yu.cartoon.utils;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.codehaus.plexus.util.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -39,7 +39,7 @@ public class SwaggerConfig {
     private ApiInfo buildApiInf() {
         return new ApiInfoBuilder()
                 .title("漫画网站接口")
-                .termsOfServiceUrl("http://blog.csdn.net/u014231523网址链接")
+                .termsOfServiceUrl("")
                 .description("漫画网站的所有controller接口")
                 .contact(new Contact("yu", "http://blog.csdn.net/u014231523", "455766338@qq.com"))
                 .build();

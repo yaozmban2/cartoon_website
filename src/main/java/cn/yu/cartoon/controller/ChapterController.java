@@ -1,6 +1,8 @@
 package cn.yu.cartoon.controller;
 
+import cn.yu.cartoon.config.CartoonSystemConfig;
 import cn.yu.cartoon.config.TempDirConfig;
+import cn.yu.cartoon.pojo.dto.Cartoon;
 import cn.yu.cartoon.pojo.dto.Chapter;
 import cn.yu.cartoon.pojo.vo.BaseResultHelper;
 import cn.yu.cartoon.pojo.vo.chaptervo.ChapterInfoVo;
@@ -46,16 +48,13 @@ public class ChapterController {
      * @author Yu
      * @date 14:26 2019/2/19
      **/
-    @ApiOperation("漫画章节上传")
+    @ApiOperation("漫画章节上传，接收zip压缩文件，返回值里面有图片服务器的域名及服务器上解压zip生成的文件路径，在后面添加上相对路径即可访问上传的图片")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "chapterName", value = "章节名字(必须)", required = true),
-            @ApiImplicitParam(paramType = "query", name = "chapterPrice", value = "章节金币价格", required = true),
     })
-    @PostMapping("/chapter/{cartoonId}")
+    @PostMapping("/chapter")
     @ResponseBody
-    public BaseResultHelper<ChapterInfoVo> uploadChapter(@PathVariable Integer cartoonId,
-                                                         @RequestParam(value = "chapterName") String chapterName,
-                                                         @RequestParam(value = "chapterPrice") Integer chapterPrice,
+    public BaseResultHelper<ChapterInfoVo> uploadChapter(@RequestParam(value = "chapterName") String chapterName,
                                                          @ApiParam(value = "上传的文件", required = true) MultipartFile zipFile) {
         BaseResultHelper<ChapterInfoVo> resultHelper = new BaseResultHelper<>();
 
@@ -68,12 +67,6 @@ public class ChapterController {
         if (null == chapterName || "".equals(chapterName)) {
             resultHelper.setCode("FAIL");
             resultHelper.setMsg("没有输入章节名称");
-            return resultHelper;
-        }
-
-        if (null == chapterPrice) {
-            resultHelper.setCode("FAIL");
-            resultHelper.setMsg("输入价格错误");
             return resultHelper;
         }
 
@@ -103,9 +96,9 @@ public class ChapterController {
         }
 
         Chapter chapter = new Chapter();
-        chapter.setCartoonId(cartoonId);
+        chapter.setCartoonId(2);
         chapter.setChapterName(chapterName);
-        chapter.setChapterPrice(chapterPrice);
+        chapter.setChapterPrice(50);
         chapter.setChapterUploadTime(new Date());
 
         Chapter returnChapter = null;
@@ -113,7 +106,7 @@ public class ChapterController {
         try {
             returnChapter = chapterService.uploadChapterByZip(chapter, filePath, TempDirConfig.getTempDecompressDirPath());
         } catch (IOException e) {
-            logger.warn("method:uploadChapter，line:59 上传章节失败！", e);
+            logger.warn("上传章节失败！", e);
             resultHelper.setCode("FAIL");
             resultHelper.setMsg("服务器出错，请重新上传");
             return resultHelper;
@@ -121,7 +114,7 @@ public class ChapterController {
         if (null != returnChapter) {
             ChapterInfoVo chapterInfoVo = new ChapterInfoVo();
             chapterInfoVo.setChapterId(returnChapter.getChapterId());
-            chapterInfoVo.setChapterUri(returnChapter.getChapterUri());
+            chapterInfoVo.setChapterUri(CartoonSystemConfig.getCartoonSystemConfig().getPictureSitePath() + "/" + returnChapter.getChapterUri());
             resultHelper.setCode("SUCCESS");
             resultHelper.setMsg("上传成功");
             resultHelper.setData(chapterInfoVo);

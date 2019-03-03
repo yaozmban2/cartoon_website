@@ -16,7 +16,7 @@ public class ChapterInfoVo {
     @ApiModelProperty(name = "chapterId", notes = "章节的id")
     private Integer chapterId;
 
-    @ApiModelProperty(name = "chapterUri", notes = "章节文件夹的名称")
+    @ApiModelProperty(name = "chapterUri", notes = "章节文件夹的地址")
     private String chapterUri;
 
     public Integer getChapterId() {

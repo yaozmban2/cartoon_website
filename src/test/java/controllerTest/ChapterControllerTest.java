@@ -52,6 +52,5 @@ public class ChapterControllerTest {
         FileInputStream fis = new FileInputStream("C:/Users/Yu/Desktop/德云色.zip");
         MultipartFile file = new MockMultipartFile("C:/Users/Yu/Desktop/德云色.zip", "德云色.zip", "application/zip", fis);
 
-        System.out.println(chapterController.uploadChapter(6, "爱你哟", 100, file));
     }
 }

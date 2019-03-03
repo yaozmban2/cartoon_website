@@ -23,18 +23,22 @@ import java.util.concurrent.TimeUnit;
 @Repository
 public class ChapterRedisDao {
 
-    @Autowired
-    RedisTemplate redisTemplate;
+    private final RedisTemplate redisTemplate;
 
     /**
      * 默认过期时长，单位：秒
      */
-    public static final long DEFAULT_EXPIRE = 60 * 5;
+    private static final long DEFAULT_EXPIRE = 60 * 5;
 
     /**
      * 不设置过期时长
      */
     public static final long NOT_EXPIRE = -1;
+
+    @Autowired
+    public ChapterRedisDao(RedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
     /**
      *  设置章节id和章节名字的映射

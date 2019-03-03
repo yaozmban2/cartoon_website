@@ -62,7 +62,6 @@ public class RegisterController {
         final int userEmailExists = 6;
         final int serverError = 7;
 
-
         //设置对象数据
         User user = new User();
         user.setUserName(userName);

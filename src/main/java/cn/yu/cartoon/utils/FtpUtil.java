@@ -1,5 +1,6 @@
 package cn.yu.cartoon.utils;
 
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.slf4j.Logger;
@@ -53,6 +54,8 @@ public class FtpUtil {
                 logger.warn("FTP服务无法连接！");
                 return false;
             }
+            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+            ftpClient.setControlEncoding("gbk");
         } catch (IOException e) {
             ftpClient.disconnect();
             throw new IOException("host = " + host + "，port = " + port + "，username = " + username + "，password = " + password + "  ==>" + "连接服务器失败！", e);
@@ -131,7 +134,7 @@ public class FtpUtil {
                         continue;
                     }
                     tempPathBuild.append(dir).append("/");
-                    String tempPath = tempPathBuild.toString();
+                    String tempPath = new String(tempPathBuild.toString().getBytes("UTF-8"), "iso-8859-1");
 
                     if (!ftpClient.changeWorkingDirectory(tempPath)) {
                         if (!ftpClient.makeDirectory(tempPath)) {
@@ -143,6 +146,7 @@ public class FtpUtil {
                 }
             }
             input = new FileInputStream(sourceFile);
+            remoteFilePath = new String(remoteFilePath.getBytes("UTF-8"),"iso-8859-1");
             //上传文件
             if (!ftpClient.storeFile(remoteFilePath, input)) {
                 logger.debug("上传文件失败！");
