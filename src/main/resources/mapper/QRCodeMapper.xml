@@ -11,4 +11,8 @@
         <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
     </resultMap>
 
+    <select id="selectQRCodeByPrice" parameterType="Integer" resultMap="BaseResultMap">
+        select qr_code_id, qr_code_funds, qr_code_provider, qr_price from qr_code where qr_price = #{qrPrice} and is_freed = 0 and is_delete = 0 order by RAND() LIMIT 1;
+    </select>
+
 </mapper>

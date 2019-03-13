@@ -12,8 +12,6 @@ import java.util.concurrent.Callable;
  **/
 public class HandlePayInfoThread implements Callable {
 
-    @Autowired
-
 
     Map messageMap;
 
@@ -24,7 +22,9 @@ public class HandlePayInfoThread implements Callable {
     @Override
     public Object call() throws Exception {
 
-
+        System.out.println("开启了一个" + Thread.currentThread().getName() + "，操作" + messageMap);
+        Thread.sleep(10000);
+        System.out.println(Thread.currentThread().getName() + "做完要关闭了");
 
         return null;
     }

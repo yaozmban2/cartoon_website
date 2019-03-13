@@ -30,4 +30,28 @@ public interface ComboService {
      * @return Combo 返回查找到的套餐信息
      **/
     Combo getComboById(Integer comboId);
+
+    /**
+     *  检查该用户之前是否已经下过同样的未结订单
+     *   如果有则在redis中有相关数据，搜索返回二维码地址
+     *
+     * @author Yu
+     * @date 16:20 2019/3/4
+     * @param userId 用户Id
+     * @param comboId 套餐Id
+     * @return String 如果有返回的是二维码地址，如果没有返回的是null
+     **/
+    String checkForUnpayOrder(int userId, int comboId);
+
+    /**
+     *  从数据库中查找未被使用的二维码
+     *  将相关信息存入redis缓存中
+     *  返回二维码地址
+     *
+     * @author Yu
+     * @date 16:30 2019/3/4
+     * @param comboPrice 套餐的价格
+     * @return String 返回二维码的地址
+     **/
+    String getQRCodeForOrder(int comboPrice);
 }

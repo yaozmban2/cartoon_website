@@ -1,5 +1,7 @@
 package cn.yu.cartoon.redis;
 
+import cn.yu.cartoon.config.StaticResource;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -59,6 +61,7 @@ public class QrCodeRedisDao {
         recordMap.put("comboId", String.valueOf(comboId));
         recordMap.put("comboType", String.valueOf(comboType));
         recordMap.put("qrCodeId", String.valueOf(qrCodeId));
+        recordMap.put("createTime", new DateTime().toString(StaticResource.getFormatStr()));
         redisTemplate.opsForHash().putAll(recordKey, recordMap);
     }
 

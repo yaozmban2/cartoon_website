@@ -18,6 +18,8 @@ import java.util.Set;
 import java.util.concurrent.*;
 
 /**
+ * 获取支付通知的NIO服务端
+ *
  * @author Yu
  * @version 1.0
  * @date 2019/3/3 15:02
@@ -25,6 +27,9 @@ import java.util.concurrent.*;
 public class PayInfoSocketServer implements Callable {
 
     private Logger logger = LoggerFactory.getLogger(PayInfoSocketServer.class);
+
+    ExecutorService threadPool = new ThreadPoolExecutor(10, 20, 10, TimeUnit.SECONDS,
+            new ArrayBlockingQueue<Runnable>(100),new HandlePayInfoThreadFactory("监听支付宝通知线程"), new ThreadPoolExecutor.CallerRunsPolicy());
 
     private Selector selector;
     private ByteBuffer readBuffer = ByteBuffer.allocate(1024);
@@ -40,24 +45,41 @@ public class PayInfoSocketServer implements Callable {
         serverSocketChannel.bind(new InetSocketAddress("localhost", 8089));
         selector = Selector.open();
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
-
-        ExecutorService threadPool = new ThreadPoolExecutor(10, 20, 10, TimeUnit.SECONDS,
-                new ArrayBlockingQueue<Runnable>(100),new HandlePayInfoThreadFactory("线程"), new ThreadPoolExecutor.CallerRunsPolicy());
+        logger.info("服务端连接打开了!");
 
         while (!Thread.currentThread().isInterrupted()) {
             selector.select();
             Set<SelectionKey> keys = selector.selectedKeys();
-            for (SelectionKey key : keys) {
+            Iterator<SelectionKey> keyIterator = keys.iterator();
+            while (keyIterator.hasNext()) {
+                SelectionKey key = keyIterator.next();
                 if (!key.isValid()) {
                     continue;
                 }
-                if (key.isReadable()) {
+                if (key.isAcceptable()) {
+                    accept(key);
+                } else if (key.isReadable()) {
                     read(key);
                 }
+                keyIterator.remove();
             }
         }
 
-        return null;
+        return 1;
+    }
+
+    /**
+     * 通过此方法给通道注册一个读操作
+     *
+     * @author Yu
+     * @date 20:37 2019/3/4
+     **/
+    private void accept(SelectionKey key) throws IOException {
+        ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
+        SocketChannel socketChannel = serverSocketChannel.accept();
+        socketChannel.configureBlocking(false);
+        socketChannel.register(selector, SelectionKey.OP_READ);
+        logger.info("a new client connected "+socketChannel.getRemoteAddress());
     }
 
     /**
@@ -83,11 +105,12 @@ public class PayInfoSocketServer implements Callable {
             return;
         }
         str = new String(readBuffer.array(), 0, numRead);
+
         //json字符串转化回HashMap对象
         ObjectMapper mapper = new ObjectMapper();
         Map map = mapper.readValue(str, HashMap.class);
         if (null != map.get(payFunds) && !"".equals(map.get(payFunds))) {
-
+            threadPool.submit(new HandlePayInfoThread(map));
         }
     }
 }
